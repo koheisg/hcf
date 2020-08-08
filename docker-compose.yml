@@ -1,0 +1,12 @@
+version: '3.4'
+services:
+  db:
+    image: postgres:latest
+    ports:
+      - ${POSTGRES_PORT-5432:5432}
+    restart: always
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
+
+volumes:
+  bundler:
