@@ -1,0 +1,61 @@
+version: 2.1
+orbs:
+  slack: circleci/slack@3.4.2
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.7.1-node-browsers
+        environment:
+          RAILS_ENV: test
+          DATABASE_URL: postgres://postgres:postgres@127.0.0.1:5432
+      - image: circleci/postgres:12.3
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+    working_directory: &working_directory ~/bs
+    steps:
+      - checkout
+
+      - restore_cache:
+          name: Restore bundle cache
+          key: bundle-{{ checksum "Gemfile.lock" }}-v2
+
+      - run:
+          name: install bundle
+          command: bundle install --jobs=4 --retry=1 --path vendor/bundle
+
+      - save_cache:
+          name: Store bundle cache
+          key: bundle-{{ checksum "Gemfile.lock" }}-v2
+          paths:
+            - vendor/bundle
+
+      - restore_cache:
+          name: Restore yarn cache
+          key: yarn-{{ checksum "yarn.lock" }}
+
+      - run:
+          name: Yarn Install
+          command: yarn install
+
+      - save_cache:
+          name: Store Yarn cache
+          key: yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - node_modules
+
+      - run:
+          name: DB prepare
+          command: RAILS_ENV=test bundle exec rails db:prepare
+
+      - run:
+          name: Run Tests
+          command: bundle exec rails test
+
+      - run:
+          name: Run mama Tests
+          command: cd ./mama && bundle install --jobs=4 --retry=1 --path ../vendor/bundle && ./bin/rails db:create && ./bin/rails test
+
+      - slack/status:
+          fail_only: true
+          mentions: "koheisg" # Optional: Enter the Slack IDs of any user or group (sub_team) to be mentioned
