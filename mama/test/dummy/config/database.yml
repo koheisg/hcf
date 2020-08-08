@@ -7,12 +7,12 @@ default: &default
 development:
   <<: *default
   port: <%= ENV.fetch('POSTGRES_PORT') { '5432' } %>
-  database: hcf_development
+  database: dummy_development
 
 test:
   <<: *default
   port: <%= ENV.fetch('POSTGRES_PORT') { '5432' } %>
-  database: hcf_test
+  database: dummy_test
 
 production:
   <<: *default
