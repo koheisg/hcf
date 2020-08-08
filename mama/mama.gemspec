@@ -9,9 +9,9 @@ Gem::Specification.new do |spec|
   spec.version     = Mama::VERSION
   spec.authors     = ["Kohei SUGI"]
   spec.email       = ["kohei.sg@gmail.com"]
-  spec.homepage    = "TODO"
-  spec.summary     = "TODO: Summary of Mama."
-  spec.description = "TODO: Description of Mama."
+  spec.homepage    = ""
+  spec.summary     = "Summary of Mama."
+  spec.description = "Description of Mama."
   spec.license     = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
